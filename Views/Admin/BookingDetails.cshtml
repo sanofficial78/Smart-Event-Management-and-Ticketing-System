@@ -1,0 +1,72 @@
+@model EventManagementSystem.Models.Booking
+@{
+    ViewData["Title"] = "Booking #" + Model.BookingID;
+    Layout = "_AdminLayout";
+}
+<div class="table-admin p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="mb-0"><i class="bi bi-ticket-perforated me-2"></i>Booking #@Model.BookingID</h5>
+        <a asp-action="Bookings" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <h6 class="text-muted mb-2">Member</h6>
+                <div><strong>@Model.Member?.FirstName @Model.Member?.LastName</strong></div>
+                <div class="small">@Model.Member?.Email</div>
+                <div class="small">@Model.Member?.Phone</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 bg-light rounded">
+                <h6 class="text-muted mb-2">Event</h6>
+                <div><strong>@Model.Event?.Title</strong></div>
+                <div class="small">@Model.Event?.Venue?.Name, @Model.Event?.EventDate.ToString("MMM dd, yyyy")</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <h6 class="mb-2">Ticket Details</h6>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Seat Type</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model.BookingDetails)
+                    {
+                        <tr>
+                            <td>@d.SeatType</td>
+                            <td>@d.Quantity</td>
+                            <td>Rs. @CurrencyHelper.ToLkr(d.UnitPrice).ToString("N0")</td>
+                            <td>Rs. @CurrencyHelper.ToLkr(d.SubTotal).ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <p class="mb-2"><strong>Status:</strong> <span class="admin-badge bg-@(Model.Status == "Confirmed" ? "primary" : Model.Status == "Completed" ? "success" : "secondary")">@Model.Status</span></p>
+            <p class="mb-2"><strong>Total:</strong> Rs. @CurrencyHelper.ToLkr(Model.TotalAmount).ToString("N0")</p>
+            <p class="text-muted small">Booked on @Model.BookingDate.ToString("MMM dd, yyyy HH:mm")</p>
+        </div>
+        <div class="col-12">
+            @if (Model.Status == "Confirmed")
+            {
+                <form asp-action="CompleteBooking" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.BookingID" />
+                    <button type="submit" class="btn btn-success btn-sm">Mark Completed</button>
+                </form>
+                <form asp-action="CancelBooking" method="post" class="d-inline" onsubmit="return confirm('Cancel this booking and release seats?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.BookingID" />
+                    <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

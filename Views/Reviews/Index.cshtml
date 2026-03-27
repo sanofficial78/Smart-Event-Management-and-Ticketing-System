@@ -1,0 +1,71 @@
+@model IEnumerable<Review>
+@{
+    ViewData["Title"] = "Browse Reviews";
+    var categories = ViewBag.Categories as string[] ?? Array.Empty<string>();
+    var selectedCategory = ViewBag.SelectedCategory as string;
+    var selectedEventId = ViewBag.SelectedEventId as int?;
+}
+<h2>Browse Reviews</h2>
+<p class="text-muted">See what others are saying about our events.</p>
+
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+                <option value="">All categories</option>
+                @foreach (var c in categories)
+                {
+                    if (selectedCategory == c)
+                    {
+                        <option value="@c" selected>@c</option>
+                    }
+                    else
+                    {
+                        <option value="@c">@c</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+        </div>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <div class="list-group">
+        @foreach (var r in Model)
+        {
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">
+                            <a asp-controller="Events" asp-action="Details" asp-route-id="@r.EventID">@r.Event?.Title</a>
+                            @if (r.Event != null)
+                            {
+                                <span class="badge bg-secondary ms-1">@r.Event.Category</span>
+                            }
+                        </h6>
+                        <p class="mb-1 text-warning">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</p>
+                        <p class="mb-1 small"><strong>@r.Member?.FirstName @r.Member?.LastName</strong></p>
+                        @if (!string.IsNullOrEmpty(r.Comment))
+                        {
+                            <p class="mb-0">@r.Comment</p>
+                        }
+                    </div>
+                    <small class="text-muted">@r.ReviewDate.ToString("MMM dd, yyyy")</small>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No reviews found. @if (string.IsNullOrEmpty(selectedCategory)) { <text>Be the first to review an event!</text> } else { <text>Try a different category.</text> }
+    </div>
+    <a asp-controller="Events" asp-action="Index" class="btn btn-primary">Browse Events</a>
+}

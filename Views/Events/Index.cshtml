@@ -1,0 +1,87 @@
+@model EventSearchResult
+@{
+    ViewData["Title"] = "Events";
+    var isMember = ViewBag.IsMember == true;
+    var categories = ViewBag.Categories as string[] ?? Array.Empty<string>();
+}
+<h2>Browse Events</h2>
+<form method="get" class="row g-3 mb-4 p-3 bg-light rounded">
+    <div class="col-md-2">
+        <label class="form-label">Category</label>
+        <select name="category" class="form-select">
+            <option value="">All</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c" selected="@(Context.Request.Query["category"] == c)">@c</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">From Date</label>
+        <input type="date" name="from" class="form-control" value="@Context.Request.Query["from"]" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">To Date</label>
+        <input type="date" name="to" class="form-control" value="@Context.Request.Query["to"]" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">City</label>
+        <input type="text" name="city" class="form-control" placeholder="e.g. Metro City" value="@Context.Request.Query["city"]" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Min Price (LKR)</label>
+        <input type="number" name="minPrice" class="form-control" min="0" step="100" placeholder="e.g. 10000" value="@Context.Request.Query["minPrice"]" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Max Price (LKR)</label>
+        <input type="number" name="maxPrice" class="form-control" min="0" step="100" placeholder="e.g. 50000" value="@Context.Request.Query["maxPrice"]" />
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<p class="text-muted small">@(isMember ? "Full member view: You can book tickets and see seat details." : "Guest view: Limited availability (Available/Full). Register to book tickets.")</p>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Venue</th>
+                <th>City</th>
+                <th>From</th>
+                @if (!isMember)
+                {
+                    <th>Availability</th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ev in Model.Events)
+            {
+                <tr>
+                    <td>@ev.Title</td>
+                    <td>@ev.Category</td>
+                    <td>@ev.EventDate.ToString("MMM dd, yyyy HH:mm")</td>
+                    <td>@ev.VenueName</td>
+                    <td>@ev.City</td>
+                    <td>Rs. @CurrencyHelper.ToLkr(ev.BasePrice).ToString("N2")</td>
+                    @if (!isMember)
+                    {
+                        <td><span class="badge @(ev.Availability == "Available" ? "bg-success" : "bg-secondary")">@ev.Availability</span></td>
+                    }
+                    <td><a asp-action="Details" asp-route-id="@ev.EventID" class="btn btn-sm btn-outline-primary">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (!Model.Events.Any())
+{
+    <p class="text-muted">No events match your search.</p>
+}

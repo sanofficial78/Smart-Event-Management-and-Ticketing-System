@@ -1,0 +1,130 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+    var recentBookings = ViewBag.RecentBookings as IEnumerable<EventManagementSystem.Models.Booking> ?? Enumerable.Empty<EventManagementSystem.Models.Booking>();
+    var recentInquiries = ViewBag.RecentInquiries as IEnumerable<EventManagementSystem.Models.Inquiry> ?? Enumerable.Empty<EventManagementSystem.Models.Inquiry>();
+}
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon events"><i class="bi bi-calendar-event"></i></div>
+            <div class="stat-value">@ViewBag.TotalEvents</div>
+            <div class="stat-label">Total Events</div>
+            <div class="stat-meta">@ViewBag.UpcomingEvents upcoming</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon bookings"><i class="bi bi-ticket-perforated"></i></div>
+            <div class="stat-value">@ViewBag.TotalBookings</div>
+            <div class="stat-label">Total Bookings</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon revenue"><i class="bi bi-currency-dollar"></i></div>
+            <div class="stat-value">Rs. @(((decimal)(ViewBag.TotalRevenue ?? 0m)).ToString("N0"))</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon members"><i class="bi bi-people"></i></div>
+            <div class="stat-value">@ViewBag.TotalMembers</div>
+            <div class="stat-label">Members</div>
+        </div>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon venues"><i class="bi bi-geo-alt"></i></div>
+            <div class="stat-value">@ViewBag.TotalVenues</div>
+            <div class="stat-label">Venues</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon inquiries"><i class="bi bi-chat-dots"></i></div>
+            <div class="stat-value">@ViewBag.TotalInquiries</div>
+            <div class="stat-label">Total Inquiries</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card @(ViewBag.UnresolvedInquiries > 0 ? "border-warning border-2" : "")">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;"><i class="bi bi-exclamation-circle"></i></div>
+            <div class="stat-value">@ViewBag.UnresolvedInquiries</div>
+            <div class="stat-label">Unresolved Inquiries</div>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="table-admin">
+            <div class="card-header">
+                <i class="bi bi-ticket-perforated me-2"></i>Recent Bookings
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Booking #</th>
+                            <th>Member</th>
+                            <th>Event</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in recentBookings)
+                        {
+                            <tr>
+                                <td><strong>#@b.BookingID</strong></td>
+                                <td>@b.Member?.FirstName @b.Member?.LastName</td>
+                                <td>@b.Event?.Title</td>
+                                <td>Rs. @EventManagementSystem.Helpers.CurrencyHelper.ToLkr(b.TotalAmount).ToString("N0")</td>
+                                <td><span class="admin-badge bg-@(b.Status == "Confirmed" ? "primary" : b.Status == "Completed" ? "success" : "secondary")">@b.Status</span></td>
+                            </tr>
+                        }
+                        @if (!recentBookings.Any())
+                        {
+                            <tr><td colspan="5" class="text-muted text-center py-5">No bookings yet</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Bookings" class="btn btn-sm btn-outline-primary">View all bookings</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="table-admin">
+            <div class="card-header">
+                <i class="bi bi-chat-dots me-2"></i>Recent Inquiries
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach (var i in recentInquiries)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong>@i.GuestName</strong>
+                            @if (i.IsResolved)
+                            { <span class="admin-badge bg-success">Resolved</span> }
+                            else
+                            { <span class="admin-badge bg-warning text-dark">Open</span> }
+                        </div>
+                        <div class="small text-muted mt-1">@i.Subject</div>
+                    </div>
+                }
+                @if (!recentInquiries.Any())
+                {
+                    <div class="list-group-item text-muted text-center py-4">No inquiries</div>
+                }
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Inquiries" class="btn btn-sm btn-outline-primary">View all inquiries</a>
+            </div>
+        </div>
+    </div>
+</div>

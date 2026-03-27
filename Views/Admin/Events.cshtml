@@ -1,0 +1,57 @@
+@model IEnumerable<Event>
+@{
+    ViewData["Title"] = "Events";
+    Layout = "_AdminLayout";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span></span>
+    <a asp-action="AddEvent" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Event</a>
+</div>
+<div class="table-admin">
+    <div class="card-header">
+        <i class="bi bi-calendar-event me-2"></i>All Events
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Venue</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td>@e.EventID</td>
+                        <td><strong>@e.Title</strong></td>
+                        <td><span class="admin-badge bg-secondary">@e.Category</span></td>
+                        <td>@e.EventDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        <td>@e.Venue?.Name, @e.Venue?.City</td>
+                        <td>Rs. @CurrencyHelper.ToLkr(e.BasePrice).ToString("N0")</td>
+                        <td>@if (e.IsActive) { <span class="admin-badge bg-success">Active</span> } else { <span class="admin-badge bg-secondary">Inactive</span> }</td>
+                        <td>
+                            <a asp-action="EditEvent" asp-route-id="@e.EventID" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <form asp-action="ToggleEventActive" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@e.EventID" />
+                                <button type="submit" class="btn btn-sm btn-outline-warning">@(e.IsActive ? "Deactivate" : "Activate")</button>
+                            </form>
+                            <form asp-action="DeleteEvent" method="post" class="d-inline" onsubmit="return confirm('Delete this event? This cannot be undone.');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@e.EventID" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

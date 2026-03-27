@@ -1,0 +1,48 @@
+@model EventManagementSystem.Models.Inquiry
+@{
+    ViewData["Title"] = "Inquiry #" + Model.InquiryID;
+    Layout = "_AdminLayout";
+}
+<div class="table-admin p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Inquiry #@Model.InquiryID</h5>
+        <a asp-action="Inquiries" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="text-muted small">From</label>
+            <div><strong>@Model.GuestName</strong></div>
+        </div>
+        <div class="col-md-6">
+            <label class="text-muted small">Email</label>
+            <div><a href="mailto:@Model.GuestEmail">@Model.GuestEmail</a></div>
+        </div>
+        <div class="col-12">
+            <label class="text-muted small">Subject</label>
+            <div><strong>@Model.Subject</strong></div>
+        </div>
+        <div class="col-12">
+            <label class="text-muted small">Message</label>
+            <div class="p-3 bg-light rounded">@Model.Message</div>
+        </div>
+        <div class="col-12">
+            <span class="text-muted small">Received @Model.InquiryDate.ToString("MMM dd, yyyy HH:mm")</span>
+            <span class="ms-2">@if (Model.IsResolved) { <span class="admin-badge bg-success">Resolved</span> } else { <span class="admin-badge bg-warning text-dark">Open</span> }</span>
+        </div>
+        @if (!Model.IsResolved)
+        {
+            <div class="col-12">
+                <form asp-action="ResolveInquiry" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.InquiryID" />
+                    <button type="submit" class="btn btn-success btn-sm">Mark Resolved</button>
+                </form>
+                <form asp-action="RejectInquiry" method="post" class="d-inline" onsubmit="return confirm('Close this inquiry without resolving?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.InquiryID" />
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Reject/Close</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,59 @@
+@model IEnumerable<EventManagementSystem.Models.Inquiry>
+@{
+    ViewData["Title"] = "Inquiries";
+    Layout = "_AdminLayout";
+}
+<div class="table-admin">
+    <div class="card-header">
+        <i class="bi bi-chat-dots me-2"></i>Customer Inquiries
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model)
+                {
+                    <tr>
+                        <td>@i.InquiryID</td>
+                        <td><strong>@i.GuestName</strong></td>
+                        <td>@i.GuestEmail</td>
+                        <td>@i.Subject</td>
+                        <td>@i.InquiryDate.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            @if (i.IsResolved)
+                            { <span class="admin-badge bg-success">Resolved</span> }
+                            else
+                            { <span class="admin-badge bg-warning text-dark">Open</span> }
+                        </td>
+                        <td>
+                            <a asp-action="InquiryDetails" asp-route-id="@i.InquiryID" class="btn btn-sm btn-outline-primary">Details</a>
+                            @if (!i.IsResolved)
+                            {
+                                <form asp-action="ResolveInquiry" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@i.InquiryID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Resolve</button>
+                                </form>
+                                <form asp-action="RejectInquiry" method="post" class="d-inline" onsubmit="return confirm('Close this inquiry?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@i.InquiryID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Reject</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

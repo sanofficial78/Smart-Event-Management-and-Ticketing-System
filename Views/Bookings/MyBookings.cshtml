@@ -1,0 +1,39 @@
+@model IEnumerable<Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+}
+<h2>My Bookings</h2>
+@if (Model.Any())
+{
+    @foreach (var b in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <span>@b.Event?.Title</span>
+                <span class="badge bg-@(b.Status == "Confirmed" ? "primary" : b.Status == "Completed" ? "success" : "secondary")">@b.Status</span>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Date:</strong> @b.Event?.EventDate.ToString("MMM dd, yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Venue:</strong> @b.Event?.Venue?.Name</p>
+                <p class="mb-1"><strong>Booked:</strong> @b.BookingDate.ToString("MMM dd, yyyy")</p>
+                <table class="table table-sm mb-0">
+                    <tr><th>Seat Type</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+                    @foreach (var d in b.BookingDetails ?? Enumerable.Empty<BookingDetail>())
+                    {
+                        <tr>
+                            <td>@d.SeatType</td>
+                            <td>@d.Quantity</td>
+                            <td>Rs. @CurrencyHelper.ToLkr(d.UnitPrice).ToString("N2")</td>
+                            <td>Rs. @CurrencyHelper.ToLkr(d.SubTotal).ToString("N2")</td>
+                        </tr>
+                    }
+                    <tr class="fw-bold"><td colspan="3">Total</td><td>Rs. @CurrencyHelper.ToLkr(b.TotalAmount).ToString("N2")</td></tr>
+                </table>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">You have no bookings yet. <a asp-controller="Events" asp-action="Index">Browse events</a> to book tickets.</p>
+}

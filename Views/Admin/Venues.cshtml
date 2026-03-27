@@ -1,0 +1,50 @@
+@model IEnumerable<EventManagementSystem.Models.Venue>
+@{
+    ViewData["Title"] = "Venues";
+    Layout = "_AdminLayout";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span></span>
+    <a asp-action="AddVenue" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Venue</a>
+</div>
+<div class="table-admin">
+    <div class="card-header">
+        <i class="bi bi-geo-alt me-2"></i>Event Venues
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Capacity</th>
+                    <th>Events</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model)
+                {
+                    <tr>
+                        <td>@v.VenueID</td>
+                        <td><strong>@v.Name</strong></td>
+                        <td>@v.Address</td>
+                        <td>@v.City</td>
+                        <td>@v.Capacity</td>
+                        <td><span class="admin-badge bg-primary">@(v.Events?.Count ?? 0)</span></td>
+                        <td>
+                            <a asp-action="EditVenue" asp-route-id="@v.VenueID" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <form asp-action="DeleteVenue" method="post" class="d-inline" onsubmit="return confirm('Delete this venue? Only works if no events are linked.');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@v.VenueID" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
