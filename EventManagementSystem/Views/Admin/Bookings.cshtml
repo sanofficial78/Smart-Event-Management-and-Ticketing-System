@@ -1,0 +1,61 @@
+@model IEnumerable<EventManagementSystem.Models.Booking>
+@{
+    ViewData["Title"] = "Bookings";
+    Layout = "_AdminLayout";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span></span>
+    <a asp-action="Bookings" class="btn btn-sm btn-outline-secondary">Refresh</a>
+</div>
+<div class="table-admin">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-ticket-perforated me-2"></i>All Bookings</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Member</th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td><strong>#@b.BookingID</strong></td>
+                        <td>
+                            <div>@b.Member?.FirstName @b.Member?.LastName</div>
+                            <small class="text-muted">@b.Member?.Email</small>
+                        </td>
+                        <td>@b.Event?.Title</td>
+                        <td>@b.BookingDate.ToString("MMM dd, yyyy")</td>
+                        <td>Rs. @CurrencyHelper.ToLkr(b.TotalAmount).ToString("N0")</td>
+                        <td><span class="admin-badge bg-@(b.Status == "Confirmed" ? "primary" : b.Status == "Completed" ? "success" : "secondary")">@b.Status</span></td>
+                        <td>
+                            <a asp-action="BookingDetails" asp-route-id="@b.BookingID" class="btn btn-sm btn-outline-primary">Details</a>
+                            @if (b.Status == "Confirmed")
+                            {
+                                <form asp-action="CompleteBooking" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@b.BookingID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Complete</button>
+                                </form>
+                                <form asp-action="CancelBooking" method="post" class="d-inline" onsubmit="return confirm('Cancel booking and release seats?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@b.BookingID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

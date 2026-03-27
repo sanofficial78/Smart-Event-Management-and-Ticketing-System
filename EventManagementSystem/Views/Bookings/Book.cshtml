@@ -1,0 +1,38 @@
+@model BookTicketsViewModel
+@{
+    ViewData["Title"] = "Book: " + Model.EventTitle;
+}
+<h2>Book Tickets: @Model.EventTitle</h2>
+<form asp-controller="Bookings" asp-action="Book" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="eventId" value="@Model.EventID" />
+    <table class="table">
+        <thead>
+            <tr><th>Seat Type</th><th>Price</th><th>Available</th><th>Quantity</th></tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.SeatOptions.Count; i++)
+            {
+                var opt = Model.SeatOptions[i];
+                <tr>
+                    <td>@opt.SeatType</td>
+                    <td>Rs. @CurrencyHelper.ToLkr(opt.Price).ToString("N2")</td>
+                    <td>@opt.Available</td>
+                    <td>
+                        <input type="number" name="seats[@opt.SeatType]" min="0" max="@opt.Available" value="0" class="form-control" style="width:100px" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mb-3">
+        <label class="form-label">Payment</label>
+        <p class="small text-muted mb-1">Demo: Simulate payment failure to test rollback (no seats reserved).</p>
+        <div class="form-check">
+            <input type="checkbox" name="simulatePaymentFailure" value="true" class="form-check-input" id="simulateFail" />
+            <label class="form-check-label" for="simulateFail">Simulate payment failure</label>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventID" class="btn btn-outline-secondary">Cancel</a>
+</form>

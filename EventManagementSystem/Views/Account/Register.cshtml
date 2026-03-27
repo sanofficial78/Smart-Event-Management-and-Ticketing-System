@@ -1,0 +1,85 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<h2>Register as Member</h2>
+<form asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label asp-for="FirstName">First Name</label>
+                <input asp-for="FirstName" class="form-control" required />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label asp-for="LastName">Last Name</label>
+                <input asp-for="LastName" class="form-control" required />
+            </div>
+        </div>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" class="form-control" type="email" required />
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" class="form-control" type="password" required />
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="ConfirmPassword">Confirm Password</label>
+        <input asp-for="ConfirmPassword" class="form-control" type="password" required />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Phone">Phone</label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Address">Address</label>
+        <input asp-for="Address" class="form-control" />
+    </div>
+    <p class="fw-bold mt-3">Event Preferences (optional)</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredMusic" class="form-check-input" />
+                <label asp-for="PreferredMusic" class="form-check-label">Music</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredTheatre" class="form-check-input" />
+                <label asp-for="PreferredTheatre" class="form-check-label">Theatre</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredSports" class="form-check-input" />
+                <label asp-for="PreferredSports" class="form-check-label">Sports</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredArts" class="form-check-input" />
+                <label asp-for="PreferredArts" class="form-check-label">Arts</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredWorkshops" class="form-check-input" />
+                <label asp-for="PreferredWorkshops" class="form-check-label">Workshops</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check mb-1">
+                <input asp-for="PreferredExhibitions" class="form-check-input" />
+                <label asp-for="PreferredExhibitions" class="form-check-label">Exhibitions</label>
+            </div>
+        </div>
+    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+    <button type="submit" class="btn btn-primary mt-3">Register</button>
+    <a asp-action="Login" class="btn btn-link mt-3">Already have an account? Sign In</a>
+</form>

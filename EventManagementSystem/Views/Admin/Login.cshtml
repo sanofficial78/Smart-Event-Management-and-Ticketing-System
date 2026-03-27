@@ -1,0 +1,35 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Admin Login";
+    Layout = "_AdminLoginLayout";
+}
+<div class="admin-login-page">
+    <div class="admin-login-card">
+        <div class="admin-login-header">
+            <i class="bi bi-shield-lock-fill"></i>
+            <h1>Admin Access</h1>
+            <p>Metropolitan Cultural Council</p>
+        </div>
+        <div class="admin-login-body">
+            <form asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                <div class="mb-4">
+                    <label asp-for="Email" class="form-label">Email Address</label>
+                    <input asp-for="Email" class="form-control" type="email" placeholder="admin@metro.gov" required autofocus />
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password" class="form-control" type="password" required />
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+            </form>
+            <div class="admin-login-footer mt-4">
+                <a asp-controller="Home" asp-action="Index"><i class="bi bi-arrow-left me-1"></i>Back to main site</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Home";
+    var events = ViewBag.UpcomingEvents as IEnumerable<Event> ?? Enumerable.Empty<Event>();
+    var isMember = ViewBag.IsMember == true;
+}
+<div class="jumbotron bg-light rounded p-4 mb-4">
+    <h1 class="display-4">Metropolitan Cultural Council</h1>
+    <p class="lead">Celebrating Arts, Culture, and Community</p>
+    <p>The Metropolitan Cultural Council promotes and supports local cultural events including concerts, theatre, exhibitions, workshops, and community activities. We connect our community with unforgettable cultural experiences.</p>
+    @if (!isMember)
+    {
+        <p class="mt-3">
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Become a Member</a>
+            <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">Sign In</a>
+        </p>
+    }
+</div>
+
+<h2>Upcoming Events</h2>
+<div class="row g-4">
+    @foreach (var ev in events)
+    {
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@ev.Title</h5>
+                    <p class="card-text text-muted small">@ev.Category • @ev.EventDate.ToString("MMM dd, yyyy")</p>
+                    <p class="card-text">@ev.Venue?.Name, @ev.Venue?.City</p>
+                    <p class="card-text"><strong>From Rs. @CurrencyHelper.ToLkr(ev.BasePrice).ToString("N2")</strong></p>
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.EventID" class="btn btn-outline-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@if (!events.Any())
+{
+    <p class="text-muted">No upcoming events at the moment. Check back soon!</p>
+}
+<div class="mt-4">
+    <a asp-controller="Events" asp-action="Index" class="btn btn-primary">Browse All Events</a>
+</div>

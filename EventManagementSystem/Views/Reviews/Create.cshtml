@@ -1,0 +1,45 @@
+@model SubmitReviewViewModel
+@{
+    ViewData["Title"] = "Submit Review";
+}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-1">Submit a Review</h2>
+                <p class="text-muted small mb-4">@Model.EventTitle</p>
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="EventID" />
+                    <input type="hidden" asp-for="EventTitle" />
+                    <div class="mb-4">
+                        <label class="form-label">Rating <span class="text-danger">*</span></label>
+                        <div class="d-flex gap-2 flex-wrap" role="group">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <div class="form-check">
+                                    <input type="radio" asp-for="Rating" value="@i" class="form-check-input" id="rating@i" />
+                                    <label class="form-check-label" for="rating@i">
+                                        <span class="text-warning" aria-hidden="true">@(new string('★', i))@(new string('☆', 5 - i))</span>
+                                        <span class="visually-hidden">@i star@(i == 1 ? "" : "s")</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="Rating" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Comment" class="form-label">Your comment (optional)</label>
+                        <textarea asp-for="Comment" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+                        <span asp-validation-for="Comment" class="text-danger small"></span>
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                        <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventID" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

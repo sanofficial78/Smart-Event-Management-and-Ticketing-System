@@ -1,0 +1,153 @@
+/* ============================================
+   Metropolitan Cultural Council
+   Smart Event Management System
+   ============================================ */
+
+/* Base */
+body {
+    padding-top: 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.jumbotron {
+    margin-bottom: 2rem;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* ============================================
+   Footer - Professional Layout
+   ============================================ */
+
+.site-footer {
+    margin-top: auto;
+    background: linear-gradient(180deg, #1a1f36 0%, #0d1117 100%);
+    color: #a8b2c1;
+    font-size: 0.9rem;
+}
+
+/* Sponsors Section */
+.footer-sponsors {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.25rem 0;
+}
+
+.sponsors-title {
+    color: #8b949e;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.sponsors-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .sponsors-grid { gap: 1rem 2rem; }
+}
+
+.sponsor-item {
+    padding: 0.5rem 1.25rem;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #c9d1d9;
+    font-size: 0.85rem;
+}
+
+.sponsor-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Footer Main */
+.footer-main {
+    padding: 2rem 0;
+}
+
+.footer-heading {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #8b949e;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #58a6ff;
+}
+
+/* Contact / Developer Section */
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-contact-link {
+    color: #8b949e;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.footer-contact-link:hover {
+    color: #58a6ff;
+}
+
+.footer-contact-icon {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1rem 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-bottom .container {
+    font-size: 0.85rem;
+    color: #6e7681;
+}
+
+.footer-credits {
+    color: #8b949e;
+    font-style: italic;
+}
